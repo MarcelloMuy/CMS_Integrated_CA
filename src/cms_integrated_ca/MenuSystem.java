@@ -79,7 +79,7 @@ public class MenuSystem {
                             String role = rs.getString("role");
                             System.out.println(role + " login successful!");
                             if (role.equals("admin")) {
-                                System.out.println("You are logged in!");
+                                displayAdminMenu();
                             }
                             return;
                         }
@@ -91,5 +91,35 @@ public class MenuSystem {
         }
         
         System.out.println("Invalid username or password. Please try again.");
-    }  
+    }
+    
+    private static void displayAdminMenu() {
+        boolean logout = false;
+
+        while (!logout) {
+            System.out.println("\nAdmin Menu:");
+            System.out.println("Please select an option:");
+            System.out.println("1. Manage Users");
+            System.out.println("2. Update Credentials");
+            System.out.println("3. Logout");
+
+            int choice = getIntInput("Enter your choice: ");
+
+            switch (choice) {
+                case 1:
+//                 call method
+                    break;
+                case 2:
+                    // Call method
+                    break;
+                case 3:
+                    logout = true;
+                    System.out.println("Logged out successfully.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
+            }
+        }
+    }
 }
