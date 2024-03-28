@@ -15,6 +15,7 @@ public class CMS_Integrated_CA {
      * @param args the command line arguments
      */
     public static void main(String[] args)  {
+        MenuSystem.main(args);
     }
     
 }
