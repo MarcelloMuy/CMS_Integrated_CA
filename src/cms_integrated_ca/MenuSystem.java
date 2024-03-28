@@ -4,6 +4,11 @@
  */
 package cms_integrated_ca;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 /**
@@ -12,7 +17,11 @@ import java.util.Scanner;
  */
 public class MenuSystem {
     private static final Scanner scanner = new Scanner(System.in);
-    private static String currentUserRole = ""; // To store the role of the current user
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/CMS";
+    private static final String USER = "pooa2024";
+    private static final String PASSWORD = "pooa2024";
+    
+    
     public static void main(String[] args) {
         boolean exit = false;
 
@@ -59,21 +68,28 @@ public class MenuSystem {
         System.out.print("Password: ");
         String password = scanner.nextLine().trim();
         
-        if (username.equals("admin") && password.equals("java")) {
-            currentUserRole = "admin";
-            System.out.println(currentUserRole+" login successful!");
-            
-        } else if (username.equals("office") && password.equals("java")) {
-            currentUserRole = "office";
-            System.out.println(currentUserRole+" login successful!");
-            
-        } else if (username.equals("lecturer") && password.equals("java")) {
-            currentUserRole = "lecturer";
-            System.out.println(currentUserRole+" login successful!");
-            
-        } else {
-            System.out.println("Invalid username or password. Please try again.");
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {
+            String sql = "SELECT * FROM users WHERE username = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, username);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        String storedPassword = rs.getString("password");
+                        if (storedPassword.equals(password)) {
+                            String role = rs.getString("role");
+                            System.out.println(role + " login successful!");
+                            if (role.equals("admin")) {
+                                System.out.println("You are logged in!");
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Login failed: " + e.getMessage());
         }
-    }
-    
+        
+        System.out.println("Invalid username or password. Please try again.");
+    }  
 }
