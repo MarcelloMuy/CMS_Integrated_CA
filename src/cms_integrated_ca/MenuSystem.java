@@ -12,7 +12,7 @@ import java.util.Scanner;
  */
 public class MenuSystem {
     private static final Scanner scanner = new Scanner(System.in);
-
+    private static String currentUserRole = ""; // To store the role of the current user
     public static void main(String[] args) {
         boolean exit = false;
 
@@ -26,7 +26,7 @@ public class MenuSystem {
 
             switch (choice) {
                 case 1:
-                    System.out.println("You are logged in");
+                    login();
                     break;
                 case 2:
                     exit = true;
@@ -51,4 +51,29 @@ public class MenuSystem {
             }
         }
     }
+         
+    private static void login() {
+        System.out.println("Login:");
+        System.out.print("Username: ");
+        String username = scanner.nextLine().trim();
+        System.out.print("Password: ");
+        String password = scanner.nextLine().trim();
+        
+        if (username.equals("admin") && password.equals("java")) {
+            currentUserRole = "admin";
+            System.out.println(currentUserRole+" login successful!");
+            
+        } else if (username.equals("office") && password.equals("java")) {
+            currentUserRole = "office";
+            System.out.println(currentUserRole+" login successful!");
+            
+        } else if (username.equals("lecturer") && password.equals("java")) {
+            currentUserRole = "lecturer";
+            System.out.println(currentUserRole+" login successful!");
+            
+        } else {
+            System.out.println("Invalid username or password. Please try again.");
+        }
+    }
+    
 }
