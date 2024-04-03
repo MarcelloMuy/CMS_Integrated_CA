@@ -107,17 +107,26 @@ public class Manage_Users {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             // Set auto commit to false
             conn.setAutoCommit(false);
-            String sql = "UPDATE Users SET role = ? WHERE username = ?";
+            String sql = "UPDATE Users SET username = ?, password = ?, role = ? WHERE username = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                // Gather user input for username and new role
+                // Gather user input for username to be updated
                 System.out.print("Enter username of the user to update: ");
-                String username = scanner.nextLine().trim();
+                String oldUsername = scanner.nextLine().trim();
+
+                // Gather new user details
+                System.out.print("Enter new username: ");
+                String newUsername = scanner.nextLine().trim();
+                System.out.print("Enter new password: ");
+                String newPassword = scanner.nextLine().trim();
                 System.out.print("Enter new role (admin/office/lecturer): ");
                 String newRole = scanner.nextLine().trim();
-                
+
                 // Set parameters and execute the query
-                pstmt.setString(1, newRole);
-                pstmt.setString(2, username);
+                pstmt.setString(1, newUsername);
+                pstmt.setString(2, newPassword);
+                pstmt.setString(3, newRole);
+                pstmt.setString(4, oldUsername);
+                
                 int rowsUpdated = pstmt.executeUpdate();
                 if (rowsUpdated > 0) {
                     System.out.println("User updated successfully.");
