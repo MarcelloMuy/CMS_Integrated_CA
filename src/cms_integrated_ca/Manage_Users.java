@@ -194,13 +194,13 @@ public class Manage_Users {
                pstmt.setString(3, username);
                int rowsUpdated = pstmt.executeUpdate();
                if (rowsUpdated > 0) {
-                   System.out.println("Admin credentials updated successfully.");
+                   System.out.println("Credentials updated successfully.");
                } else {
-                   System.out.println("Failed to update admin credentials.");
+                   System.out.println("Failed to update credentials.");
                }
            }
        } catch (SQLException e) {
-           System.out.println("Error updating admin credentials: " + e.getMessage());
+           System.out.println("Error updating credentials: " + e.getMessage());
        }
    }
 }

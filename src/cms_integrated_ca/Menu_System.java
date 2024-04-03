@@ -79,10 +79,23 @@ public class Menu_System {
                         if (storedPassword.equals(password)) {
                             String role = rs.getString("role");
                             System.out.println(role + " login successful!");
-                            if (role.equals("admin")) {
+                            switch (role) {
+                            case "admin":
                                 loggedInUsername = username;
-                                displayAdminMenu();                                
-                            }
+                                displayAdminMenu();
+                                break;
+                            case "office":
+                                loggedInUsername = username;
+                                displayOfficeMenu();
+                                break;
+                            case "lecturer":
+                                loggedInUsername = username;
+                                displayLecturerMenu();
+                                break;
+                            default:
+                                System.out.println("Invalid role.");
+                                break;
+                        }
                             return;
                         }
                     }
@@ -110,6 +123,66 @@ public class Menu_System {
             switch (choice) {
                 case 1:
                     Manage_Users.DisplayMenu();
+                    break;
+                case 2:                    
+                    Manage_Users.UpdateCredentials(loggedInUsername);                    
+                    break;
+                case 3:
+                    logout = true;
+                    System.out.println("Logged out successfully.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
+            }
+        }
+    }
+    
+    private static void displayOfficeMenu() {
+        boolean logout = false;
+
+        while (!logout) {
+            System.out.println("\nOffice Menu:");
+            System.out.println("Please select an option:");
+            System.out.println("1. Generate Reports");
+            System.out.println("2. Update Credentials");
+            System.out.println("3. Logout");
+
+            int choice = getIntInput("Enter your choice: ");
+
+            switch (choice) {
+                case 1:
+//                    Generate reports
+                    break;
+                case 2:                    
+                    Manage_Users.UpdateCredentials(loggedInUsername);                    
+                    break;
+                case 3:
+                    logout = true;
+                    System.out.println("Logged out successfully.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
+            }
+        }
+    }
+    
+    private static void displayLecturerMenu() {
+        boolean logout = false;
+
+        while (!logout) {
+            System.out.println("\nOffice Menu:");
+            System.out.println("Please select an option:");
+            System.out.println("1. Generate Report");
+            System.out.println("2. Update Credentials");
+            System.out.println("3. Logout");
+
+            int choice = getIntInput("Enter your choice: ");
+
+            switch (choice) {
+                case 1:
+//                    Generate reports
                     break;
                 case 2:                    
                     Manage_Users.UpdateCredentials(loggedInUsername);                    
