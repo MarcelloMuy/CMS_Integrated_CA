@@ -24,6 +24,9 @@ public class Manage_Users {
     public static void DisplayMenu() {
         displayMenu();
     }
+    public static void UpdateCredentials(){
+        updateCredentials();
+    }
     
     private static void displayMenu() {
         boolean exit = false;
@@ -174,4 +177,30 @@ public class Manage_Users {
             System.out.println("Error viewing users: " + e.getMessage());
         }
     }
+    
+    private static void updateCredentials() {
+       System.out.println("Update Credentials:");
+       System.out.print("Enter new username: ");
+       String newUsername = scanner.nextLine().trim();
+       System.out.print("Enter new password: ");
+       String newPassword = scanner.nextLine().trim();
+
+       // Update admin's credentials in the database
+       try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+           String sql = "UPDATE Users SET username = ?, password = ? WHERE role = 'admin'";
+           try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+               pstmt.setString(1, newUsername);
+               pstmt.setString(2, newPassword);
+               int rowsUpdated = pstmt.executeUpdate();
+               if (rowsUpdated > 0) {
+                   System.out.println("Admin credentials updated successfully.");
+               } else {
+                   System.out.println("Failed to update admin credentials.");
+               }
+           }
+       } catch (SQLException e) {
+           System.out.println("Error updating admin credentials: " + e.getMessage());
+       }
+   }
 }
+

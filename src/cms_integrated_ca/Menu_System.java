@@ -110,7 +110,7 @@ public class Menu_System {
                     Manage_Users.DisplayMenu();
                     break;
                 case 2:
-                    // Call method
+                    Manage_Users.UpdateCredentials();
                     break;
                 case 3:
                     logout = true;
