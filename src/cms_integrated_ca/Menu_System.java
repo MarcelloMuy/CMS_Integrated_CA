@@ -15,6 +15,7 @@ import java.util.Scanner;
  *
  * @author Marce
  */
+
 public class Menu_System {
     private static final Scanner scanner = new Scanner(System.in);
     private static final String DB_URL = "jdbc:mysql://localhost:3306/CMS";
@@ -144,20 +145,28 @@ public class Menu_System {
         while (!logout) {
             System.out.println("\nOffice Menu:");
             System.out.println("Please select an option:");
-            System.out.println("1. Generate Reports");
-            System.out.println("2. Update Credentials");
-            System.out.println("3. Logout");
+            System.out.println("1. Generate Course Report");
+            System.out.println("2. Generate Student Report");
+            System.out.println("3. Generate Lecturer Report");
+            System.out.println("4. Update Credentials");
+            System.out.println("5. Logout");
 
             int choice = getIntInput("Enter your choice: ");
 
             switch (choice) {
                 case 1:
-//                    Generate reports
+                    Generate_Reports.selectReport("course");
                     break;
-                case 2:                    
-                    Manage_Users.UpdateCredentials(loggedInUsername);                    
+                case 2:
+                    Generate_Reports.selectReport("student");
                     break;
                 case 3:
+                    Generate_Reports.selectReport("lecturer");
+                    break;
+                case 4:                    
+                    Manage_Users.UpdateCredentials(loggedInUsername);                    
+                    break;
+                case 5:
                     logout = true;
                     System.out.println("Logged out successfully.");
                     break;
@@ -167,14 +176,14 @@ public class Menu_System {
             }
         }
     }
-    
+
     private static void displayLecturerMenu() {
         boolean logout = false;
 
         while (!logout) {
-            System.out.println("\nOffice Menu:");
+            System.out.println("\nLecturer Menu:");
             System.out.println("Please select an option:");
-            System.out.println("1. Generate Report");
+            System.out.println("1. Generate Lecturer Report");
             System.out.println("2. Update Credentials");
             System.out.println("3. Logout");
 
@@ -182,7 +191,7 @@ public class Menu_System {
 
             switch (choice) {
                 case 1:
-//                    Generate reports
+                    Generate_Reports.selectReport("lecturer");
                     break;
                 case 2:                    
                     Manage_Users.UpdateCredentials(loggedInUsername);                    
@@ -196,5 +205,5 @@ public class Menu_System {
                     break;
             }
         }
-    }
+    }    
 }
