@@ -21,7 +21,8 @@ public class Menu_System {
     private static final String USER = "pooa2024";
     private static final String PASSWORD = "pooa2024";
     
-    
+    private static String loggedInUsername; // Variable to store the username of the logged-in user
+       
     public static void main(String[] args) {
         boolean exit = false;
 
@@ -79,7 +80,8 @@ public class Menu_System {
                             String role = rs.getString("role");
                             System.out.println(role + " login successful!");
                             if (role.equals("admin")) {
-                                displayAdminMenu();
+                                loggedInUsername = username;
+                                displayAdminMenu();                                
                             }
                             return;
                         }
@@ -109,8 +111,8 @@ public class Menu_System {
                 case 1:
                     Manage_Users.DisplayMenu();
                     break;
-                case 2:
-                    Manage_Users.UpdateCredentials();
+                case 2:                    
+                    Manage_Users.UpdateCredentials(loggedInUsername);                    
                     break;
                 case 3:
                     logout = true;

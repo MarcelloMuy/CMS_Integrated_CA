@@ -24,8 +24,8 @@ public class Manage_Users {
     public static void DisplayMenu() {
         displayMenu();
     }
-    public static void UpdateCredentials(){
-        updateCredentials();
+    public static void UpdateCredentials(String username){
+        updateCredentials(username);
     }
     
     private static void displayMenu() {
@@ -178,7 +178,7 @@ public class Manage_Users {
         }
     }
     
-    private static void updateCredentials() {
+    private static void updateCredentials(String username) {
        System.out.println("Update Credentials:");
        System.out.print("Enter new username: ");
        String newUsername = scanner.nextLine().trim();
@@ -187,10 +187,11 @@ public class Manage_Users {
 
        // Update admin's credentials in the database
        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-           String sql = "UPDATE Users SET username = ?, password = ? WHERE role = 'admin'";
+           String sql = "UPDATE Users SET username = ?, password = ? WHERE username = ?";
            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                pstmt.setString(1, newUsername);
                pstmt.setString(2, newPassword);
+               pstmt.setString(3, username);
                int rowsUpdated = pstmt.executeUpdate();
                if (rowsUpdated > 0) {
                    System.out.println("Admin credentials updated successfully.");
