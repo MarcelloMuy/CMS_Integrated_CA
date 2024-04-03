@@ -15,7 +15,7 @@ import java.util.Scanner;
  *
  * @author Marce
  */
-public class MenuSystem {
+public class Menu_System {
     private static final Scanner scanner = new Scanner(System.in);
     private static final String DB_URL = "jdbc:mysql://localhost:3306/CMS";
     private static final String USER = "pooa2024";
@@ -107,7 +107,7 @@ public class MenuSystem {
 
             switch (choice) {
                 case 1:
-//                 call method
+                    Manage_Users.DisplayMenu();
                     break;
                 case 2:
                     // Call method
