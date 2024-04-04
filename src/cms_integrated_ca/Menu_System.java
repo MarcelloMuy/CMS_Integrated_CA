@@ -155,13 +155,13 @@ public class Menu_System {
 
             switch (choice) {
                 case 1:
-                    Generate_Reports.selectReport("course");
+                    generateReportMenu("course");
                     break;
                 case 2:
-                    Generate_Reports.selectReport("student");
+                    generateReportMenu("student");
                     break;
                 case 3:
-                    Generate_Reports.selectReport("lecturer");
+                    generateReportMenu("lecturer");
                     break;
                 case 4:                    
                     Manage_Users.UpdateCredentials(loggedInUsername);                    
@@ -191,7 +191,7 @@ public class Menu_System {
 
             switch (choice) {
                 case 1:
-                    Generate_Reports.selectReport("lecturer");
+                    generateReportMenu("lecturer");
                     break;
                 case 2:                    
                     Manage_Users.UpdateCredentials(loggedInUsername);                    
@@ -204,6 +204,30 @@ public class Menu_System {
                     System.out.println("Invalid choice. Please try again.");
                     break;
             }
+        }
+    }
+
+    private static void generateReportMenu(String reportType) {
+        System.out.println("Select the report format:");
+        System.out.println("1. TXT file");
+        System.out.println("2. CSV file");
+        System.out.println("3. Console");
+
+        int choice = getIntInput("Enter your choice: ");
+
+        switch (choice) {
+            case 1:
+                Generate_Reports.selectReport(reportType, "txt");
+                break;
+            case 2:
+                Generate_Reports.selectReport(reportType, "csv");
+                break;
+            case 3:
+                Generate_Reports.selectReport(reportType, "console");
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+                break;
         }
     }    
 }
