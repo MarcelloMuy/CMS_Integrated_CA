@@ -242,7 +242,7 @@ public class Generate_Reports {
                     "L.lecturer_name, " +
                     "L.role, " +
                     "GROUP_CONCAT(DISTINCT CT.class_type_name ORDER BY CT.class_type_name) AS class_types, " +
-                    "M.module_name, " +
+                    "GROUP_CONCAT(DISTINCT M.module_name ORDER BY M.module_name) AS teaching_modules, " +
                     "COUNT(DISTINCT E.student_id) AS num_students_enrolled " +
                     "FROM " +
                     "Lecturers L " +
@@ -255,7 +255,7 @@ public class Generate_Reports {
                     "LEFT JOIN " +
                     "Enrollments E ON M.module_id = E.module_id " +
                     "GROUP BY " +
-                    "L.lecturer_name, L.role, M.module_name";
+                    "L.lecturer_id, L.lecturer_name, L.role";
           
             try (PreparedStatement pstmt = conn.prepareStatement(query);
                  ResultSet rs = pstmt.executeQuery()) {
@@ -285,7 +285,7 @@ public class Generate_Reports {
                         rs.getString("lecturer_name"),
                         rs.getString("role"),
                         rs.getString("class_types"),
-                        rs.getString("module_name"),
+                        rs.getString("teaching_modules"),
                         rs.getInt("num_students_enrolled"));
                 writer.write(line);
             }
@@ -300,7 +300,7 @@ public class Generate_Reports {
                 String lecturerName = rs.getString("lecturer_name");
                 String role = rs.getString("role");
                 String classTypes = "\"" + rs.getString("class_types").replaceAll(",", ", ") + "\"";
-                String moduleName = rs.getString("module_name");
+                String moduleName = rs.getString("teaching_modules");
                 int numStudentsEnrolled = rs.getInt("num_students_enrolled");
                 String line = String.format("%s,%s,%s,%s,%d%n",
                         lecturerName,
@@ -320,7 +320,7 @@ public class Generate_Reports {
                     rs.getString("lecturer_name"),
                     rs.getString("role"),
                     rs.getString("class_types"),
-                    rs.getString("module_name"),
+                    rs.getString("teaching_modules"),
                     rs.getInt("num_students_enrolled"));
         }
         System.out.println("Console report generated successfully.");
