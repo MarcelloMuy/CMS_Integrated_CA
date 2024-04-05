@@ -14,6 +14,8 @@ public class CMS_Integrated_CA {
 //    GITHUB REPOSITORY LINK: https://github.com/MarcelloMuy/CMS_Integrated_CA
     
     /**
+     * * The main method of the CMS Integrated CA application.
+     * It initializes the system.
      * @param args the command line arguments
      */
     public static void main(String[] args)  {
