@@ -30,10 +30,10 @@ public class Generate_Reports {
                 generateCourseReport(outputFormat);
                 break;
             case "student":
-              generateStudentReport(outputFormat);
+                generateStudentReport(outputFormat);
                 break;
             case "lecturer":
-//                generateLecturerReport(outputFormat);
+                generateLecturerReport(outputFormat);
                 break;
             default:
                 System.out.println("Invalid report type.");
@@ -232,6 +232,96 @@ public class Generate_Reports {
                     rs.getString("enrolled_modules"),
                     rs.getString("completed_modules"),
                     rs.getString("modules_to_repeat"));
+        }
+        System.out.println("Console report generated successfully.");
+    }
+    
+    public static void generateLecturerReport(String outputFormat) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String query = "SELECT " +
+                    "L.lecturer_name, " +
+                    "L.role, " +
+                    "GROUP_CONCAT(DISTINCT CT.class_type_name ORDER BY CT.class_type_name) AS class_types, " +
+                    "M.module_name, " +
+                    "COUNT(DISTINCT E.student_id) AS num_students_enrolled " +
+                    "FROM " +
+                    "Lecturers L " +
+                    "JOIN " +
+                    "Lecturer_Class_Types LCT ON L.lecturer_id = LCT.lecturer_id " +
+                    "JOIN " +
+                    "Class_Types CT ON LCT.class_type_id = CT.class_type_id " +
+                    "JOIN " +
+                    "Modules M ON L.lecturer_id = M.lecturer_id " +
+                    "LEFT JOIN " +
+                    "Enrollments E ON M.module_id = E.module_id " +
+                    "GROUP BY " +
+                    "L.lecturer_name, L.role, M.module_name";
+          
+            try (PreparedStatement pstmt = conn.prepareStatement(query);
+                 ResultSet rs = pstmt.executeQuery()) {
+
+                switch (outputFormat) {
+                    case "txt":
+                        generateTxtLecturerReport(rs);
+                        break;
+                    case "csv":
+                        generateCsvLecturerReport(rs);
+                        break;
+                    case "console":   
+                        generateConsoleLecturerReport(rs);
+                        break;
+                    default:
+                        System.out.println("Invalid output format.");
+                }
+            }
+        } catch (SQLException | IOException e) {
+        }
+    }
+
+    private static void generateTxtLecturerReport(ResultSet rs) throws SQLException, IOException {
+        try (FileWriter writer = new FileWriter("lecturer_report.txt")) {
+            while (rs.next()) {
+                String line = String.format("Lecturer Name: %s | Role: %s | Class Types: %s | Teaching Modules: %s | Number of Students Enrolled: %d%n",
+                        rs.getString("lecturer_name"),
+                        rs.getString("role"),
+                        rs.getString("class_types"),
+                        rs.getString("module_name"),
+                        rs.getInt("num_students_enrolled"));
+                writer.write(line);
+            }
+        }
+        System.out.println("TXT report generated successfully.");
+    }
+
+    private static void generateCsvLecturerReport(ResultSet rs) throws SQLException, IOException {
+        try (FileWriter writer = new FileWriter("lecturer_report.csv")) {
+            writer.write("Lecturer Name,Role,Class Types,Teaching Modules,Number of Students Enrolled\n");
+            while (rs.next()) {
+                String lecturerName = rs.getString("lecturer_name");
+                String role = rs.getString("role");
+                String classTypes = "\"" + rs.getString("class_types").replaceAll(",", ", ") + "\"";
+                String moduleName = rs.getString("module_name");
+                int numStudentsEnrolled = rs.getInt("num_students_enrolled");
+                String line = String.format("%s,%s,%s,%s,%d%n",
+                        lecturerName,
+                        role,
+                        classTypes,
+                        moduleName,
+                        numStudentsEnrolled);
+                writer.write(line);
+            }
+        }
+        System.out.println("CSV report generated successfully.");
+    }
+
+    private static void generateConsoleLecturerReport(ResultSet rs) throws SQLException {
+        while (rs.next()) {
+            System.out.printf("Lecturer Name: %s | Role: %s | Class Types: %s | Teaching Modules: %s | Number of Students Enrolled: %d%n",
+                    rs.getString("lecturer_name"),
+                    rs.getString("role"),
+                    rs.getString("class_types"),
+                    rs.getString("module_name"),
+                    rs.getInt("num_students_enrolled"));
         }
         System.out.println("Console report generated successfully.");
     }
