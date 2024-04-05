@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -32,7 +33,7 @@ public class Generate_Reports {
 //                generateStudentReport();
                 break;
             case "lecturer":
-//                generateLecturerReport();
+                generateLecturerReport(outputFormat);
                 break;
             default:
                 System.out.println("Invalid report type.");
@@ -64,13 +65,13 @@ public class Generate_Reports {
 
                 switch (outputFormat) {
                     case "txt":
-                        generateTxtReport(rs);
+                        generateTxtCourseReport(rs);
                         break;
                     case "csv":
-                        generateCsvReport(rs);
+                        generateCsvCourseReport(rs);
                         break;
                     case "console":
-                        generateConsoleReport(rs);
+                        generateConsoleCourseReport(rs);
                         break;
                     default:
                         System.out.println("Invalid output format.");
@@ -80,7 +81,7 @@ public class Generate_Reports {
         }
     }
 
-    private static void generateTxtReport(ResultSet rs) throws SQLException, IOException {
+    private static void generateTxtCourseReport(ResultSet rs) throws SQLException, IOException {
         try (FileWriter writer = new FileWriter("course_report.txt")) {
             while (rs.next()) {
                 String line = String.format("Module: %s | Course: %s | Enrolled Students: %d | Lecturer: %s | Room: %s%n",
@@ -95,7 +96,7 @@ public class Generate_Reports {
         System.out.println("TXT report generated successfully.");
     }
 
-    private static void generateCsvReport(ResultSet rs) throws SQLException, IOException {
+    private static void generateCsvCourseReport(ResultSet rs) throws SQLException, IOException {
         try (FileWriter writer = new FileWriter("course_report.csv")) {
             writer.write("Module,Course,Enrolled Students,Lecturer,Room\n");
             while (rs.next()) {
@@ -111,7 +112,7 @@ public class Generate_Reports {
         System.out.println("CSV report generated successfully.");
     }
 
-    private static void generateConsoleReport(ResultSet rs) throws SQLException {
+    private static void generateConsoleCourseReport(ResultSet rs) throws SQLException {
         while (rs.next()) {
             System.out.printf("Module: %s | Course: %s | Enrolled Students: %d | Lecturer: %s | Room: %s%n",
                     rs.getString("module_name"),
@@ -119,6 +120,118 @@ public class Generate_Reports {
                     rs.getInt("enrolled_students"),
                     rs.getString("lecturer_name"),
                     rs.getString("room_name"));
+        }
+        System.out.println("Console report generated successfully.");
+    }
+    
+    public static void generateLecturerReport(String outputFormat) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String query = "SELECT " +
+                    "CONCAT(s.first_name, ' ', s.last_name) AS full_name, " +
+                    "s.student_id, " +
+                    "c.course_name, " +
+                    "GROUP_CONCAT(DISTINCT m.module_name SEPARATOR ', ') AS enrolled_modules, " +
+                    "IF(COUNT(DISTINCT cm.module_name) > 0, " +
+                    "GROUP_CONCAT(DISTINCT CONCAT(cm.module_name, ' (Grade: ', sg.grade, ')') SEPARATOR ', '), " +
+                    "'No completed modules') AS completed_modules, " +
+                    "IF(COUNT(DISTINCT mr.module_name) > 0, " +
+                    "GROUP_CONCAT(DISTINCT CONCAT(mr.module_name, ' (Grade: ', sg2.grade, ')') SEPARATOR ', '), " +
+                    "'No modules to repeat') AS modules_to_repeat " +
+                    "FROM " +
+                    "Students s " +
+                    "JOIN " +
+                    "Courses c ON s.course_type = c.course_id " +
+                    "JOIN " +
+                    "Enrollments e ON s.student_id = e.student_id " +
+                    "JOIN " +
+                    "Modules m ON e.module_id = m.module_id " +
+                    "LEFT JOIN " +
+                    "Completed_Modules comp ON s.student_id = comp.student_id " +
+                    "LEFT JOIN " +
+                    "Modules cm ON comp.module_id = cm.module_id " +
+                    "LEFT JOIN " +
+                    "Student_Grades sg ON comp.enrollment_id = sg.enrollment_id " +
+                    "LEFT JOIN " +
+                    "Modules_To_Repeat mt ON s.student_id = mt.student_id " +
+                    "LEFT JOIN " +
+                    "Modules mr ON mt.module_id = mr.module_id " +
+                    "LEFT JOIN " +
+                    "Enrollments er ON mt.student_id = er.student_id AND mt.module_id = er.module_id " +
+                    "LEFT JOIN " +
+                    "Student_Grades sg2 ON er.enrollment_id = sg2.enrollment_id " +
+                    "GROUP BY " +
+                    "s.student_id";
+            
+          
+            try (PreparedStatement pstmt = conn.prepareStatement(query);
+                 ResultSet rs = pstmt.executeQuery()) {
+
+                switch (outputFormat) {
+                    case "txt":
+                        generateTxtLecturerReport(rs);
+                        break;
+                    case "csv":
+                        generateCsvLecturerReport(rs);
+                        break;
+                    case "console":   
+                        generateConsoleLecturerReport(rs);
+                        break;
+                    default:
+                        System.out.println("Invalid output format.");
+                }
+            }
+        } catch (SQLException | IOException e) {
+        }
+    }
+
+    private static void generateTxtLecturerReport(ResultSet rs) throws SQLException, IOException {
+        try (FileWriter writer = new FileWriter("lecturer_report.txt")) {
+            while (rs.next()) {
+                String line = String.format("Full Name: %s | Student ID: %d | Course Name: %s | Enrolled Modules: %s | Completed Modules: %s | Modules to Repeat: %s%n",
+                        rs.getString("full_name"),
+                        rs.getInt("student_id"),
+                        rs.getString("course_name"),
+                        rs.getString("enrolled_modules"),
+                        rs.getString("completed_modules"),
+                        rs.getString("modules_to_repeat"));
+                writer.write(line);
+            }
+        }
+        System.out.println("TXT report generated successfully.");
+    }
+
+    private static void generateCsvLecturerReport(ResultSet rs) throws SQLException, IOException {
+        try (FileWriter writer = new FileWriter("lecturer_report.csv")) {
+            writer.write("Full Name,Student ID,Course Name,Enrolled Modules,Completed Modules,Modules to Repeat\n");
+            while (rs.next()) {
+                String fullName = rs.getString("full_name");
+                int studentId = rs.getInt("student_id");
+                String courseName = rs.getString("course_name");
+                String enrolledModules = "\"" + rs.getString("enrolled_modules").replaceAll(",", ", ") + "\"";
+                String completedModules = "\"" + rs.getString("completed_modules").replaceAll(",", ", ") + "\"";
+                String modulesToRepeat = "\"" + rs.getString("modules_to_repeat").replaceAll(",", ", ") + "\"";
+                String line = String.format("%s,%d,%s,%s,%s,%s%n",
+                        fullName,
+                        studentId,
+                        courseName,
+                        enrolledModules,
+                        completedModules,
+                        modulesToRepeat);
+                writer.write(line);
+            }
+        }
+        System.out.println("CSV report generated successfully.");
+    }
+
+    private static void generateConsoleLecturerReport(ResultSet rs) throws SQLException {
+        while (rs.next()) {
+            System.out.printf("Full Name: %s | Student ID: %d | Course Name: %s | Enrolled Modules: %s | Completed Modules: %s | Modules to Repeat: %s%n",
+                    rs.getString("full_name"),
+                    rs.getInt("student_id"),
+                    rs.getString("course_name"),
+                    rs.getString("enrolled_modules"),
+                    rs.getString("completed_modules"),
+                    rs.getString("modules_to_repeat"));
         }
         System.out.println("Console report generated successfully.");
     }
