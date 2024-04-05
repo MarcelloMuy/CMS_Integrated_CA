@@ -14,11 +14,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
+ * The Generate_Reports class provides methods for generating reports from the CMS database.
+ * It supports generating reports for courses, students, and lecturers in various output formats
+ * such as TXT, CSV, and console.
+ * 
+ * This class contains methods to:
+ * - Generate course reports
+ * - Generate student reports 
+ * - Generate lecturer reports
+ * 
+ * Each report generation method retrieves data from the database based on predefined SQL queries
+ * and formats the retrieved data into the specified output format.
+ * 
  *
  * @author Marce
  */
-
-
 public class Generate_Reports {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/CMS";
     private static final String DB_USER = "pooa2024";
@@ -40,7 +50,14 @@ public class Generate_Reports {
                 break;
         }
     }
-
+    
+     /**
+     * Generates a course report based on the specified output format.
+     * 
+     * @param outputFormat The format in which the report should be generated ("txt", "csv", or "console").
+     * 
+     * The method executes an SQL query to retrieve data from the CMS database
+     */
     public static void generateCourseReport(String outputFormat) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String query = "SELECT " +
@@ -80,7 +97,9 @@ public class Generate_Reports {
         } catch (SQLException | IOException e) {
         }
     }
-
+     /**
+     * Generates a course report in TXT format.
+     */
     private static void generateTxtCourseReport(ResultSet rs) throws SQLException, IOException {
         try (FileWriter writer = new FileWriter("course_report.txt")) {
             while (rs.next()) {
@@ -95,7 +114,9 @@ public class Generate_Reports {
         }
         System.out.println("TXT report generated successfully.");
     }
-
+     /**
+     * Generates a course report in CSV format.
+     */
     private static void generateCsvCourseReport(ResultSet rs) throws SQLException, IOException {
         try (FileWriter writer = new FileWriter("course_report.csv")) {
             writer.write("Module,Course,Enrolled Students,Lecturer,Room\n");
@@ -111,7 +132,9 @@ public class Generate_Reports {
         }
         System.out.println("CSV report generated successfully.");
     }
-
+     /**
+     * Generates a course report in the console.
+     */
     private static void generateConsoleCourseReport(ResultSet rs) throws SQLException {
         while (rs.next()) {
             System.out.printf("Module: %s | Course: %s | Enrolled Students: %d | Lecturer: %s | Room: %s%n",
@@ -124,6 +147,13 @@ public class Generate_Reports {
         System.out.println("Console report generated successfully.");
     }
     
+     /**
+     * Generates a student report based on the specified output format.
+     * 
+     * @param outputFormat The format in which the report should be generated ("txt", "csv", or "console").
+     * 
+     * The method executes an SQL query to retrieve data from the CMS database
+     */
     public static void generateStudentReport(String outputFormat) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String query = "SELECT " +
@@ -183,7 +213,10 @@ public class Generate_Reports {
         } catch (SQLException | IOException e) {
         }
     }
-
+    
+     /**
+     * Generates a student report in TXT format.
+     */
     private static void generateTxtStudentReport(ResultSet rs) throws SQLException, IOException {
         try (FileWriter writer = new FileWriter("student_report.txt")) {
             while (rs.next()) {
@@ -199,7 +232,10 @@ public class Generate_Reports {
         }
         System.out.println("TXT report generated successfully.");
     }
-
+    
+     /**
+     * Generates a student report in CSV format.
+     */
     private static void generateCsvStudentReport(ResultSet rs) throws SQLException, IOException {
         try (FileWriter writer = new FileWriter("student_report.csv")) {
             writer.write("Full Name,Student ID,Course Name,Enrolled Modules,Completed Modules,Modules to Repeat\n");
@@ -222,7 +258,10 @@ public class Generate_Reports {
         }
         System.out.println("CSV report generated successfully.");
     }
-
+    
+     /**
+     * Generates a student report in the console.
+     */
     private static void generateConsoleStudentReport(ResultSet rs) throws SQLException {
         while (rs.next()) {
             System.out.printf("Full Name: %s | Student ID: %d | Course Name: %s | Enrolled Modules: %s | Completed Modules: %s | Modules to Repeat: %s%n",
@@ -236,6 +275,13 @@ public class Generate_Reports {
         System.out.println("Console report generated successfully.");
     }
     
+     /**
+     * Generates a lecturer report based on the specified output format.
+     * 
+     * @param outputFormat The format in which the report should be generated ("txt", "csv", or "console").
+     * 
+     * The method executes an SQL query to retrieve data from the CMS database
+     */    
     public static void generateLecturerReport(String outputFormat) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String query = "SELECT " +
@@ -277,7 +323,10 @@ public class Generate_Reports {
         } catch (SQLException | IOException e) {
         }
     }
-
+    
+     /**
+     * Generates a lecturer report in TXT format.
+     */
     private static void generateTxtLecturerReport(ResultSet rs) throws SQLException, IOException {
         try (FileWriter writer = new FileWriter("lecturer_report.txt")) {
             while (rs.next()) {
@@ -292,7 +341,10 @@ public class Generate_Reports {
         }
         System.out.println("TXT report generated successfully.");
     }
-
+    
+     /**
+     * Generates a lecturer report in CSV format.
+     */
     private static void generateCsvLecturerReport(ResultSet rs) throws SQLException, IOException {
         try (FileWriter writer = new FileWriter("lecturer_report.csv")) {
             writer.write("Lecturer Name,Role,Class Types,Teaching Modules,Number of Students Enrolled\n");
@@ -313,7 +365,10 @@ public class Generate_Reports {
         }
         System.out.println("CSV report generated successfully.");
     }
-
+    
+     /**
+     * Generates a lecturer report in the console.
+     */
     private static void generateConsoleLecturerReport(ResultSet rs) throws SQLException {
         while (rs.next()) {
             System.out.printf("Lecturer Name: %s | Role: %s | Class Types: %s | Teaching Modules: %s | Number of Students Enrolled: %d%n",

@@ -12,10 +12,13 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 /**
- *
+ * This class represents the main menu system of the CMS (Content Management System).
+ * It allows users to log in, displays appropriate menus based on their roles, and provides options for managing users and reports.
+ * 
+ * The class uses JDBC for database interaction and includes methods for handling user input and displaying menus.
+ * 
  * @author Marce
  */
-
 public class Menu_System {
     private static final Scanner scanner = new Scanner(System.in);
     private static final String DB_URL = "jdbc:mysql://localhost:3306/CMS";
@@ -23,7 +26,13 @@ public class Menu_System {
     private static final String PASSWORD = "pooa2024";
     
     private static String loggedInUsername; // Variable to store the username of the logged-in user
-       
+    
+     /**
+     * The main method of the CMS menu system.
+     * It displays the welcome message and presents options for logging in or exiting the program.
+     * 
+     * @param args The command line arguments.
+     */   
     public static void main(String[] args) {
         boolean exit = false;
 
@@ -52,6 +61,14 @@ public class Menu_System {
         // Close resources
         scanner.close();
     }
+    
+     /**
+     * Prompts the user with a given message to enter an integer input and returns it.
+     * Keeps prompting until a valid integer input is provided.
+     * 
+     * @param prompt The message prompt to display to the user.
+     * @return The integer input provided by the user.
+     */
     private static int getIntInput(String prompt) {
         while (true) {
             try {
@@ -62,7 +79,13 @@ public class Menu_System {
             }
         }
     }
-         
+    
+     /**
+     * Handles the login process for users.
+     * Prompts the user to enter their username and password.
+     * Retrieves user information from the database and verifies credentials.
+     * Displays appropriate menus based on the user's role after successful login.
+     */
     private static void login() {
         System.out.println("Login:");
         System.out.print("Username: ");
@@ -109,6 +132,11 @@ public class Menu_System {
         System.out.println("Invalid username or password. Please try again.");
     }
     
+      /**
+     * Displays the menu options available to administrators.
+     * Allows administrators to manage users or update their own credentials.
+     * Provides an option to logout.
+     */
     private static void displayAdminMenu() {
         boolean logout = false;
 
@@ -139,6 +167,11 @@ public class Menu_System {
         }
     }
     
+     /**
+     * Displays the menu options available to office staff.
+     * Allows office staff to generate reports or update their own credentials.
+     * Provides an option to logout.
+     */
     private static void displayOfficeMenu() {
         boolean logout = false;
 
@@ -176,7 +209,12 @@ public class Menu_System {
             }
         }
     }
-
+    
+     /**
+     * Displays the menu options available to lecturers.
+     * Allows lecturers to generate reports or update their own credentials.
+     * Provides an option to logout.
+     */
     private static void displayLecturerMenu() {
         boolean logout = false;
 
@@ -206,7 +244,13 @@ public class Menu_System {
             }
         }
     }
-
+    
+     /**
+     * Displays the menu options for generating reports.
+     * Allows users to select the format of the report: TXT file, CSV file, or Console.
+     * 
+     * @param reportType The type of report to generate.
+     */
     private static void generateReportMenu(String reportType) {
         System.out.println("Select the report format:");
         System.out.println("1. TXT file");

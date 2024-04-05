@@ -5,7 +5,10 @@
 package cms_integrated_ca;
 
 /**
- *
+ * This class provides functionality for managing users in the CMS (Content Management System).
+ * It includes methods for adding, updating, deleting, and viewing user information.
+ * 
+ * The class also includes a method for updating user credentials, primarily designed for the admin user.
  * @author Marce
  */
 import java.sql.Connection;
@@ -20,14 +23,27 @@ public class Manage_Users {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/CMS";
     private static final String DB_USER = "pooa2024";
     private static final String DB_PASSWORD = "pooa2024";
-
+    
+    /**
+     * Displays the user management menu and handles user inputs.
+     */
     public static void DisplayMenu() {
         displayMenu();
     }
+    
+    /**
+     * Updates the credentials (username and password) for a specified user.
+     * 
+     * @param username The username of the user whose credentials need to be updated.
+     */
     public static void UpdateCredentials(String username){
         updateCredentials(username);
     }
     
+    /**
+     * Displays the user management menu and handles user inputs.
+     * The menu options include adding, updating, deleting, and viewing users, as well as exiting the menu.
+     */
     private static void displayMenu() {
         boolean exit = false;
 
@@ -64,7 +80,13 @@ public class Manage_Users {
             }
         }
     }
-
+    
+    /**
+     * Prompts the user to enter an integer input and returns it.
+     * Keeps prompting until a valid integer input is provided.
+     * 
+     * @return The integer input provided by the user.
+     */
     private static int getIntInput() {
         while (true) {
             try {
@@ -74,7 +96,14 @@ public class Manage_Users {
             }
         }
     }
-
+    
+    /**
+     * Adds a new user to the database.
+     * Prompts the user to enter a username, password, and role for the new user.
+     * 
+     * If successful, the user is added to the database and a success message is displayed.
+     * If an error occurs, an error message is displayed.
+     */
     private static void addUser() {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             // Set auto commit to false
@@ -102,7 +131,16 @@ public class Manage_Users {
             System.out.println("Error adding user: " + e.getMessage());
         }
     }
-
+    
+    /**
+     * Updates the information of an existing user in the database.
+     * Prompts the user to enter the username of the user to be updated,
+     * as well as the new username, password, and role for the user.
+     * 
+     * If successful, the user's information is updated in the database and a success message is displayed.
+     * If no user is found with the provided username, an appropriate message is displayed.
+     * If an error occurs, an error message is displayed.
+     */
     private static void updateUser() {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             // Set auto commit to false
@@ -140,7 +178,15 @@ public class Manage_Users {
             System.out.println("Error updating user: " + e.getMessage());
         }
     }
-
+    
+    /**
+     * Deletes a user from the database based on the provided username.
+     * Prompts the user to enter the username of the user to be deleted.
+     * 
+     * If successful, the user is deleted from the database and a success message is displayed.
+     * If no user is found with the provided username, an appropriate message is displayed.
+     * If an error occurs, an error message is displayed.
+     */
     private static void deleteUser() {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             //          Set auto commit to false
@@ -166,7 +212,13 @@ public class Manage_Users {
             System.out.println("Error deleting user: " + e.getMessage());
         }
     }
-
+    
+    /**
+     * Displays the list of users currently stored in the database along with their roles.
+     * Retrieves user information from the database and prints it to the console.
+     * 
+     * If an error occurs during the database operation, an error message is displayed.
+     */
     private static void viewUsers() {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String sql = "SELECT * FROM Users";
@@ -187,6 +239,12 @@ public class Manage_Users {
         }
     }
     
+        /**
+     * Updates the credentials (username and password) for the specified user.
+     * Prompts the user to enter a new username and password.
+     * 
+     * @param username The username of the user whose credentials are to be updated.
+     */
     private static void updateCredentials(String username) {
        System.out.println("Update Credentials:");
        System.out.print("Enter new username: ");
