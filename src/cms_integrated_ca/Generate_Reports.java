@@ -30,10 +30,10 @@ public class Generate_Reports {
                 generateCourseReport(outputFormat);
                 break;
             case "student":
-//                generateStudentReport();
+              generateStudentReport(outputFormat);
                 break;
             case "lecturer":
-                generateLecturerReport(outputFormat);
+//                generateLecturerReport(outputFormat);
                 break;
             default:
                 System.out.println("Invalid report type.");
@@ -124,7 +124,7 @@ public class Generate_Reports {
         System.out.println("Console report generated successfully.");
     }
     
-    public static void generateLecturerReport(String outputFormat) {
+    public static void generateStudentReport(String outputFormat) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String query = "SELECT " +
                     "CONCAT(s.first_name, ' ', s.last_name) AS full_name, " +
@@ -168,13 +168,13 @@ public class Generate_Reports {
 
                 switch (outputFormat) {
                     case "txt":
-                        generateTxtLecturerReport(rs);
+                        generateTxtStudentReport(rs);
                         break;
                     case "csv":
-                        generateCsvLecturerReport(rs);
+                        generateCsvStudentReport(rs);
                         break;
                     case "console":   
-                        generateConsoleLecturerReport(rs);
+                        generateConsoleStudentReport(rs);
                         break;
                     default:
                         System.out.println("Invalid output format.");
@@ -184,8 +184,8 @@ public class Generate_Reports {
         }
     }
 
-    private static void generateTxtLecturerReport(ResultSet rs) throws SQLException, IOException {
-        try (FileWriter writer = new FileWriter("lecturer_report.txt")) {
+    private static void generateTxtStudentReport(ResultSet rs) throws SQLException, IOException {
+        try (FileWriter writer = new FileWriter("student_report.txt")) {
             while (rs.next()) {
                 String line = String.format("Full Name: %s | Student ID: %d | Course Name: %s | Enrolled Modules: %s | Completed Modules: %s | Modules to Repeat: %s%n",
                         rs.getString("full_name"),
@@ -200,8 +200,8 @@ public class Generate_Reports {
         System.out.println("TXT report generated successfully.");
     }
 
-    private static void generateCsvLecturerReport(ResultSet rs) throws SQLException, IOException {
-        try (FileWriter writer = new FileWriter("lecturer_report.csv")) {
+    private static void generateCsvStudentReport(ResultSet rs) throws SQLException, IOException {
+        try (FileWriter writer = new FileWriter("student_report.csv")) {
             writer.write("Full Name,Student ID,Course Name,Enrolled Modules,Completed Modules,Modules to Repeat\n");
             while (rs.next()) {
                 String fullName = rs.getString("full_name");
@@ -223,7 +223,7 @@ public class Generate_Reports {
         System.out.println("CSV report generated successfully.");
     }
 
-    private static void generateConsoleLecturerReport(ResultSet rs) throws SQLException {
+    private static void generateConsoleStudentReport(ResultSet rs) throws SQLException {
         while (rs.next()) {
             System.out.printf("Full Name: %s | Student ID: %d | Course Name: %s | Enrolled Modules: %s | Completed Modules: %s | Modules to Repeat: %s%n",
                     rs.getString("full_name"),
